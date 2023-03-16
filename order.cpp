@@ -10,6 +10,12 @@ bool contains(C &&c, T t)
     return find(begin(c), end(c), t) != end(c);
 };
 
+/* get milliseconds till now since epoch time  */
+time_t get_time()
+{
+    return system_clock::to_time_t(system_clock::now());
+}
+
 class Order
 {
 public:
@@ -21,24 +27,24 @@ public:
     int quantity;
     int status;
     string reason;
-    time_t arrival_time;
-    time_t completion_time;
+    time_t transaction_time;
 
     Order()
     {
         status = 0;
-        arrival_time = time(0);
-        completion_time = arrival_time;
+        transaction_time = get_time();
     };
 
     /* validate the order */
     void validate();
     /* update order */
     void update();
-    /* return the formatted transaction time */
-    char *transaction_time();
     /* display the order */
     void display();
+    /* set transaction time */
+    void set_transaction_time();
+    /* get the formatted transaction time */
+    char *get_transaction_time();
 };
 
 void Order::validate()
@@ -84,18 +90,19 @@ void Order::update()
     if (quantity == 0)
     {
         status = 2;
-        completion_time = time(0);
     };
 }
 
-char *Order::transaction_time()
+void Order::set_transaction_time()
+{
+    transaction_time = get_time();
+}
+
+char *Order::get_transaction_time()
 {
     char *buffer;
-    time_t time_diff = completion_time - arrival_time;
-    struct tm *tmp;
-
-    tmp = localtime(&time_diff);
-    strftime(buffer, 256, "%Y.%m.%d-%H:%M:%S", tmp);
+    struct tm *tmp = gmtime(&transaction_time);
+    strftime(buffer, 25, "%Y.%m.%d-%H:%M:%S", tmp);
 
     return buffer;
 }
@@ -110,6 +117,6 @@ void Order::display()
     cout << "Quantity: " << quantity << endl;
     cout << "Status: " << Status[status] << endl;
     cout << "Reason: " << reason << endl;
-    cout << "Transaction Time: " << transaction_time() << endl;
+    cout << "Transaction Time: " << get_transaction_time() << endl;
     cout << endl;
 }

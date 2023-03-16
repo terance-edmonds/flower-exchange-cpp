@@ -1,0 +1,7 @@
+Client Order ID,Order ID,Instrument,Side,Price,Quantity,Exec Status,Reason,Transaction Time
+aa13,ord1,Rose,1,55,100,New,,2023.03.16-06:10
+aa14,ord2,Rose,1,65,100,New,,2023.03.16-06:10
+aa15,ord3,Rose,2,55,100,Pfill,,2023.03.16-06:10
+aa13,ord1,Rose,1,55,100,Fill,,2023.03.16-06:10
+aa15,ord3,Rose,2,65,100,Pfill,,2023.03.16-06:10
+aa14,ord2,Rose,1,65,100,Fill,,2023.03.16-06:10

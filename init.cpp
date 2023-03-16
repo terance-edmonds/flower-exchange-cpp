@@ -5,9 +5,11 @@
 #include <algorithm>
 #include <map>
 #include <list>
-#include <time.h>
+#include <chrono>
+#include <iomanip>
 
 using namespace std;
+using namespace chrono;
 
 #include "order.cpp"
 #include "order_book.cpp"
@@ -28,21 +30,16 @@ map<string, OrderBook> order_books = {
     {"Orchid", orchid_orders},
 };
 
-/* report */
-list<Order> report;
-
 /* read csv */
-void read_csv(string);
+void read_csv(string, string);
 /* write csv */
-void write_csv(string);
+void write_csv(ofstream &, Order);
 /* process an order */
-void process_order(Order);
+list<Order> process_order(Order);
 
 int main()
 {
-    read_csv("data/data_1.csv");
-
-    write_csv("execution_rep.csv");
+    read_csv("data/data_1.csv", "out/execution_rep.csv");
 
     cout << "Done";
 
@@ -50,14 +47,20 @@ int main()
 }
 
 /* read csv file line by line */
-void read_csv(string path)
+void read_csv(string fin_path, string fout_path)
 {
     fstream fin;
+    ofstream fout;
     static string line;
     unsigned int i = 1;
 
-    /* open csv file */
-    fin.open(path);
+    /* open data csv file */
+    fin.open(fin_path);
+
+    /* open output csv file */
+    fout.open(fout_path);
+    /* set header for output file */
+    fout << "Client Order ID,Order ID,Instrument,Side,Price,Quantity,Exec Status,Reason,Transaction Time\n";
 
     if (!fin.is_open())
     {
@@ -96,39 +99,38 @@ void read_csv(string path)
 
         /* if the order is rejected continue to the next line */
         if (order.status == 1)
+        {
+            write_csv(fout, order);
             continue;
+        }
 
-        process_order(order);
+        /* write the trades to output file */
+        list<Order> trades = process_order(order);
+        for (Order &_order : trades)
+        {
+            write_csv(fout, _order);
+        }
     }
+
+    /* close data file */
+    fin.close();
+    /* close output file */
+    fout.close();
 }
 
-void process_order(Order order)
+list<Order> process_order(Order order)
 {
     /* get the relevant order book */
     OrderBook &order_book = order_books[order.instrument];
 
-    /* add to relevant order book */
-    list<Order> trades = order_book.add(order);
-
-    report.splice(report.end(), trades);
+    /* add order to relevant order book */
+    /* returns the trades */
+    return order_book.add(order);
 }
 
-void write_csv(string path)
+void write_csv(ofstream &file, Order order)
 {
-    ofstream file;
-
-    file.open(path);
-
-    /* header */
-    file << "Client Order ID,Order ID,Instrument,Side,Price,Quantity,Exec Status,Reason,Transaction Time\n";
-
-    list<Order>::iterator order;
-    for (order = report.begin(); order != report.end(); ++order)
-    {
-        file << order->client_id << "," << order->order_id << "," << order->instrument << "," << order->side << "," << order->price << "," << order->quantity << "," << Status[order->status] << "," << order->reason << ","
-             << "transaction time"
-             << "\n";
-    }
-
-    file.close();
+    file << order.client_id << "," << order.order_id << "," << order.instrument << "," << order.side << "," << order.price << "," << order.quantity << "," << Status[order.status] << "," << order.reason << ","
+         << order.get_transaction_time()
+         << "\n";
 }

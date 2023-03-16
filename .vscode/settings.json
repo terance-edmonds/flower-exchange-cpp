@@ -45,7 +45,11 @@
         "fstream": "cpp",
         "string": "cpp",
         "list": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "chrono": "cpp",
+        "format": "cpp",
+        "sstream": "cpp",
+        "iomanip": "cpp"
     },
     "cSpell.words": [
         "fout",

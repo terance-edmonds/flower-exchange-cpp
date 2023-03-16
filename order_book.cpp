@@ -71,11 +71,13 @@ list<Order> OrderBook::add(Order order)
             buy_order.status = order.status;
             buy_order.price = order.price;
             buy_order.quantity = quantity;
+            buy_order.set_transaction_time();
 
             /* set the current sell trade info */
             sell_order.status = it->status;
             sell_order.price = order.price;
             sell_order.quantity = quantity;
+            sell_order.set_transaction_time();
 
             /* add the current order to trades list */
             trades.push_back(buy_order);
@@ -96,7 +98,10 @@ list<Order> OrderBook::add(Order order)
 
         /* if the order is new */
         if (order.status == 0)
+        {
+            order.set_transaction_time();
             trades.push_back(order);
+        }
 
         return trades;
     }
@@ -141,11 +146,13 @@ list<Order> OrderBook::add(Order order)
             buy_order.status = it->status;
             buy_order.price = it->price;
             buy_order.quantity = quantity;
+            buy_order.set_transaction_time();
 
             /* set the current sell trade info */
             sell_order.status = order.status;
             sell_order.price = it->price;
             sell_order.quantity = quantity;
+            sell_order.set_transaction_time();
 
             /* add the current order to trades list */
             trades.push_back(sell_order);
@@ -166,7 +173,10 @@ list<Order> OrderBook::add(Order order)
 
         /* if the order is new */
         if (order.status == 0)
+        {
+            order.set_transaction_time();
             trades.push_back(order);
+        }
 
         return trades;
     }
