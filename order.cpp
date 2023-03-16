@@ -27,12 +27,12 @@ public:
     int quantity;
     int status;
     string reason;
-    time_t transaction_time;
+    string transaction_time;
 
     Order()
     {
         status = 0;
-        transaction_time = get_time();
+        set_transaction_time();
     };
 
     /* validate the order */
@@ -43,8 +43,6 @@ public:
     void display();
     /* set transaction time */
     void set_transaction_time();
-    /* get the formatted transaction time */
-    char *get_transaction_time();
 };
 
 void Order::validate()
@@ -95,16 +93,15 @@ void Order::update()
 
 void Order::set_transaction_time()
 {
-    transaction_time = get_time();
-}
+    ostringstream oss;
+    auto now = system_clock::now();
+    const auto as_time_t = std::chrono::system_clock::to_time_t(now);
+    auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
 
-char *Order::get_transaction_time()
-{
-    char *buffer;
-    struct tm *tmp = gmtime(&transaction_time);
-    strftime(buffer, 25, "%Y.%m.%d-%H:%M:%S", tmp);
+    oss << put_time(localtime(&as_time_t), "%Y%m%d-%H%M%S%T");
+    oss << '.' << setfill('0') << setw(3) << ms.count();
 
-    return buffer;
+    transaction_time = oss.str();
 }
 
 void Order::display()
@@ -117,6 +114,6 @@ void Order::display()
     cout << "Quantity: " << quantity << endl;
     cout << "Status: " << Status[status] << endl;
     cout << "Reason: " << reason << endl;
-    cout << "Transaction Time: " << get_transaction_time() << endl;
+    cout << "Transaction Time: " << transaction_time << endl;
     cout << endl;
 }

@@ -46,7 +46,6 @@ int main()
 
     clock_t start = clock();
     read_csv(fin_path, fout_path);
-    auto end = steady_clock::now();
 
     cout << endl;
     cout << "Finished in: " << (double)(clock() - start) / CLOCKS_PER_SEC << "s" << endl;
@@ -142,6 +141,6 @@ list<Order> process_order(Order order)
 void write_csv(ofstream &file, Order order)
 {
     file << order.client_id << "," << order.order_id << "," << order.instrument << "," << order.side << "," << order.price << "," << order.quantity << "," << Status[order.status] << "," << order.reason << ","
-         << order.get_transaction_time()
+         << order.transaction_time
          << "\n";
 }
