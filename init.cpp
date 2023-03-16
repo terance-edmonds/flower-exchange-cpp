@@ -39,9 +39,18 @@ list<Order> process_order(Order);
 
 int main()
 {
-    read_csv("data/data_1.csv", "out/execution_rep.csv");
+    string fin_path, fout_path = "out/execution_rep.csv";
 
-    cout << "Done";
+    cout << "Enter input file path: ";
+    cin >> fin_path;
+
+    clock_t start = clock();
+    read_csv(fin_path, fout_path);
+    auto end = steady_clock::now();
+
+    cout << endl;
+    cout << "Finished in: " << (double)(clock() - start) / CLOCKS_PER_SEC << "s" << endl;
+    cout << "Output file: " << fout_path;
 
     return 0;
 }
@@ -65,8 +74,10 @@ void read_csv(string fin_path, string fout_path)
     if (!fin.is_open())
     {
         cout << "Data file not found";
-        return;
+        exit(0);
     }
+
+    cout << "Processing..." << endl;
 
     /* to ignore the first line */
     getline(fin, line);
