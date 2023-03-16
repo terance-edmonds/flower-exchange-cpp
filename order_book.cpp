@@ -1,18 +1,5 @@
-template <class C>
-void _add(C &&c, Order order)
-{
-    list<Order>::iterator it;
-    for (it = c.begin(); it != c.end(); ++it)
-    {
-        if (it->price >= order.price)
-        {
-            c.insert(it, order);
-            return;
-        }
-    }
-
-    c.push_back(order);
-}
+void add_buy(list<Order> &, Order);
+void add_sell(list<Order> &, Order);
 
 class OrderBook
 {
@@ -84,26 +71,24 @@ list<Order> OrderBook::add(Order order)
             trades.push_back(sell_order);
 
             /* if the seller order is complete remove from order book */
-            if (it->status == 3)
-                it = --sell_side.erase(it++);
+            if (it->status == 2)
+                it = --sell_side.erase(it);
 
             /* stop processing if no stocks */
-            if (order.quantity == 2)
+            if (order.quantity == 0)
                 break;
         }
 
+        /* set order transaction time */
+        order.set_transaction_time();
+
         /* if the order is not rejected and not filled add to the book */
         if (order.status != 1 && order.status != 3)
-            _add(buy_side, order);
+            add_buy(buy_side, order);
 
         /* if the order is new */
         if (order.status == 0)
-        {
-            order.set_transaction_time();
             trades.push_back(order);
-        }
-
-        return trades;
     }
 
     /* sell */
@@ -116,7 +101,7 @@ list<Order> OrderBook::add(Order order)
             Order sell_order = order;
             int quantity;
 
-            if (it->price < order.price)
+            if (order.price > it->price)
                 break;
 
             if (order.quantity >= it->quantity)
@@ -167,19 +152,19 @@ list<Order> OrderBook::add(Order order)
                 break;
         }
 
+        /* set order transaction time */
+        order.set_transaction_time();
+
         /* if the order is not rejected and not filled add to the book */
         if (order.status != 1 && order.status != 3)
-            _add(sell_side, order);
+            add_sell(sell_side, order);
 
         /* if the order is new */
         if (order.status == 0)
-        {
-            order.set_transaction_time();
             trades.push_back(order);
-        }
-
-        return trades;
     }
+
+    return trades;
 }
 
 void OrderBook::display()
@@ -204,4 +189,34 @@ void OrderBook::display()
         s_it->display();
     }
     cout << endl;
+}
+
+void add_buy(list<Order> &ol, Order order)
+{
+    list<Order>::iterator it;
+    for (it = ol.begin(); it != ol.end(); ++it)
+    {
+        if (order.price >= it->price)
+        {
+            ol.insert(it, order);
+            return;
+        }
+    }
+
+    ol.push_back(order);
+}
+
+void add_sell(list<Order> &ol, Order order)
+{
+    list<Order>::iterator it;
+    for (it = ol.begin(); it != ol.end(); ++it)
+    {
+        if (it->price >= order.price)
+        {
+            ol.insert(it, order);
+            return;
+        }
+    }
+
+    ol.push_back(order);
 }
