@@ -44,11 +44,13 @@ int main()
     cout << "Enter input file path: ";
     cin >> fin_path;
 
-    clock_t start = clock();
+    high_resolution_clock::time_point begin_time = high_resolution_clock::now();
     read_csv(fin_path, fout_path);
+    high_resolution_clock::time_point end_time = high_resolution_clock::now();
 
+    duration<double> time_elapsed = duration_cast<duration<double>>(end_time - begin_time);
     cout << endl;
-    cout << "Finished in: " << (double)(clock() - start) / CLOCKS_PER_SEC << "s" << endl;
+    cout << "Finished in: " << time_elapsed.count() << "s" << endl;
     cout << "Output file: " << fout_path;
 
     return 0;
