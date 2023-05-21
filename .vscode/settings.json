@@ -64,7 +64,9 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "filesystem": "cpp",
+        "codecvt": "cpp"
     },
     "cSpell.words": [
         "fout",

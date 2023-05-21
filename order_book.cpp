@@ -28,15 +28,18 @@ list<Order> OrderBook::add(Order order)
             Order buy_order = order;
             int quantity;
 
+            /* if the buy order price is greater; stop loop */
             if (it->price > order.price)
                 break;
 
+            /* if sell order has some stock */
             if (order.quantity >= it->quantity)
             {
                 order.quantity -= it->quantity;
                 quantity = it->quantity;
                 it->quantity = 0;
             }
+            /* if sell order has more stock */
             else if (it->quantity >= order.quantity)
             {
                 it->quantity = order.quantity;
@@ -83,7 +86,7 @@ list<Order> OrderBook::add(Order order)
         order.set_transaction_time();
 
         /* if the order is not rejected and not filled add to the book */
-        if (order.status != 1 && order.status != 3)
+        if (order.status != 1 && order.status != 2)
             add_buy(buy_side, order);
 
         /* if the order is new */
@@ -101,15 +104,18 @@ list<Order> OrderBook::add(Order order)
             Order sell_order = order;
             int quantity;
 
+            /* if the sell order price is greater; stop loop */
             if (order.price > it->price)
                 break;
 
+            /* if sell order has more stock */
             if (order.quantity >= it->quantity)
             {
                 order.quantity -= it->quantity;
                 quantity = it->quantity;
                 it->quantity = 0;
             }
+            /* if sell order has some stock */
             else if (it->quantity >= order.quantity)
             {
                 it->quantity -= order.quantity;
@@ -156,7 +162,7 @@ list<Order> OrderBook::add(Order order)
         order.set_transaction_time();
 
         /* if the order is not rejected and not filled add to the book */
-        if (order.status != 1 && order.status != 3)
+        if (order.status != 1 && order.status != 2)
             add_sell(sell_side, order);
 
         /* if the order is new */

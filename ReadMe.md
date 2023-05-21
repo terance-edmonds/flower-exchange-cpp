@@ -16,6 +16,6 @@ A simple flower stock exchange system that accepts data from a csv file, then pr
 
 ## Example
 
-Enter the directory path to the input data csv file. 
+Enter the directory path to the input data csv file.
 
 **Enter input file path: data/data_0.csv**
