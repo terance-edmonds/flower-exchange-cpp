@@ -59,13 +59,13 @@ list<Order> OrderBook::add(Order order)
 
             /* set the current buy trade info */
             buy_order.status = order.status;
-            buy_order.price = order.price;
+            buy_order.price = it->price;
             buy_order.quantity = quantity;
             buy_order.set_transaction_time();
 
             /* set the current sell trade info */
             sell_order.status = it->status;
-            sell_order.price = order.price;
+            sell_order.price = it->price;
             sell_order.quantity = quantity;
             sell_order.set_transaction_time();
 

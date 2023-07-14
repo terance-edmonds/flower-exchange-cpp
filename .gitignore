@@ -2,3 +2,4 @@ tempCodeRunnerFile.cpp
 *.exe
 /docs
 out/*
+build
